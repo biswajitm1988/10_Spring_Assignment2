@@ -4,6 +4,8 @@ import com.fsd.spring.model.Book;
 import com.fsd.spring.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -24,7 +26,7 @@ public class SubjectHelper {
 
     public int deleteSubject(String searchSubTitle) throws IOException, ClassNotFoundException {
         List<Subject> subjectList = fileReadWriteHelper.readSubjectsFromFile();
-        if (subjectList.isEmpty()) {
+        if (CollectionUtils.isEmpty(subjectList)) {
             System.out.println("There are no subjects in the system");
             return 0;
         }
@@ -32,7 +34,8 @@ public class SubjectHelper {
         int count=0;
         while (listIterator.hasNext()){
             Subject subject = listIterator.next();
-            if(subject.getSubtitle().contains(searchSubTitle)) {
+            if(!StringUtils.isEmpty(subject.getSubtitle())
+                    && subject.getSubtitle().contains(searchSubTitle)) {
                 listIterator.remove();
                 count++;
             }
@@ -45,13 +48,12 @@ public class SubjectHelper {
     public List<Book> searchBySubject(String subTitle) throws IOException, ClassNotFoundException {
         List<Subject> subjectList = fileReadWriteHelper.readSubjectsFromFile();
         List<Book> bookDetailsList  = new ArrayList<Book>();
-        if (subjectList.isEmpty()) {
+        if (CollectionUtils.isEmpty(subjectList)) {
             System.out.println("There are no subjects in the system");
             return bookDetailsList;
         }
          for (Subject subject:subjectList){
-            if(subTitle!=null
-                    && subject.getSubtitle()!=null
+            if(!StringUtils.isEmpty(subject.getSubtitle())
                     && subject.getSubtitle().toLowerCase().contains(subTitle.toLowerCase())) {
                 for (Book book : subject.getReferences()) {
                     bookDetailsList.add(book);

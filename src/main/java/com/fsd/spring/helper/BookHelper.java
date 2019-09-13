@@ -4,6 +4,7 @@ import com.fsd.spring.model.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,18 +23,18 @@ public class BookHelper {
     public List<Book> searchByBook(String bookTitle) throws IOException, ClassNotFoundException {
         List<Book> bookList = fileReadWriteHelper.readBooksFromFile();
         List<Book> bookDetailsList = new ArrayList<Book>();
-        if (bookList.isEmpty()) {
+        if (CollectionUtils.isEmpty(bookList)) {
             System.out.println("There are no books in the system");
             return bookList;
         }
 
         for (Book book : bookList) {
-            if (bookTitle != null && book.getTitle() != null
+            if (!StringUtils.isEmpty(book.getTitle())
                     && book.getTitle().toLowerCase().contains(bookTitle.toLowerCase())) {
                 bookDetailsList.add(book);
             }
         }
-        if (bookDetailsList.isEmpty()) {
+        if (CollectionUtils.isEmpty(bookDetailsList)) {
             System.out.println("no books found for your search : " + bookTitle);
         } else {
             System.out.println("Matching Books :\n" + bookDetailsList);
@@ -43,7 +44,7 @@ public class BookHelper {
 
     public int deleteBook(String bookTitle) throws IOException, ClassNotFoundException {
         List<Book> bookList = fileReadWriteHelper.readBooksFromFile();
-        if (bookList.isEmpty()) {
+        if (CollectionUtils.isEmpty(bookList)) {
             System.out.println("There are no books in the system");
             return 0;
         }
@@ -51,7 +52,8 @@ public class BookHelper {
         ListIterator<Book> listIterator = bookList.listIterator();
         while (listIterator.hasNext()) {
             Book book = listIterator.next();
-            if (book.getTitle().contains(bookTitle)) {
+            if (!StringUtils.isEmpty(book.getTitle())
+                    && book.getTitle().contains(bookTitle)) {
                 listIterator.remove();
                 count++;
             }
