@@ -41,16 +41,12 @@ public class BookHelper {
         return bookDetailsList;
     }
 
-    public int deleteBook(String searchBookTitle) throws IOException, ClassNotFoundException {
+    public int deleteBook(String bookTitle) throws IOException, ClassNotFoundException {
         List<Book> bookList = fileReadWriteHelper.readBooksFromFile();
         if (bookList.isEmpty()) {
             System.out.println("There are no books in the system");
             return 0;
         }
-        Scanner input = new Scanner(System.in);
-        System.out.println("\nEnter title by which you want to delete : ");
-        String bookTitle = input.nextLine();
-
         int count = 0;
         ListIterator<Book> listIterator = bookList.listIterator();
         while (listIterator.hasNext()) {
